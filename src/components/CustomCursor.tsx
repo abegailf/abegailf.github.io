@@ -11,13 +11,15 @@ export default function CustomCursor() {
     };
 
     const handleMouseOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+
       if (
         target.tagName === 'A' ||
         target.tagName === 'BUTTON' ||
-        target.closest('a') ||
-        target.closest('button') ||
-        target.classList.contains('hover-target')
+        target.closest?.('a') ||
+        target.closest?.('button') ||
+        target.classList?.contains?.('hover-target')
       ) {
         setIsHovering(true);
       } else {

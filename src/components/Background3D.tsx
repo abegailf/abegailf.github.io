@@ -1,6 +1,36 @@
-import { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, Component, ErrorInfo, ReactNode } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Points, PointMaterial } from '@react-three/drei';
+
+interface ErrorBoundaryProps {
+  children: ReactNode;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+}
+
+class CanvasErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(): ErrorBoundaryState {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.warn("Background3D Canvas failed to render, falling back safely:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return null;
+    }
+    return this.props.children;
+  }
+}
 
 // Helper to generate points in a sphere without external deps
 function generatePointsInSphere(count: number, radius: number) {
@@ -52,9 +82,11 @@ function ParticleField(props: any) {
 export default function Background3D() {
   return (
     <div className="fixed inset-0 z-0 pointer-events-none opacity-60">
-      <Canvas camera={{ position: [0, 0, 1] }}>
-        <ParticleField />
-      </Canvas>
+      <CanvasErrorBoundary>
+        <Canvas camera={{ position: [0, 0, 1] }}>
+          <ParticleField />
+        </Canvas>
+      </CanvasErrorBoundary>
     </div>
   );
 }
