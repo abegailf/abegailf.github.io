@@ -6,12 +6,16 @@ import Work from './components/Work';
 import Projects from './components/Projects';
 import Contact from './components/Contact';
 import { useContent } from './contexts/ContentContext';
+import { Analytics } from '@vercel/analytics/react';
 
 export default function App() {
   const content = useContent();
   
   return (
     <main className="relative w-full min-h-screen bg-darker selection:bg-orange-500 selection:text-darker font-sans text-white">
+      {/* Vercel Web Analytics */}
+      <Analytics />
+
       {/* Global Noise Overlay */}
       <div className="noise" />
       
